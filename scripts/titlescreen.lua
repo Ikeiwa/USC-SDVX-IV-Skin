@@ -17,6 +17,8 @@ local bgPatternTimer = 0
 local cursorYs = {}
 local buttons = nil
 local resx, resy = game.GetResolution();
+game.LoadSkinSample("title_bgm")
+local played = false;
 
 view_update = function()
     if package.config:sub(1,1) == '\\' then --windows
@@ -165,11 +167,16 @@ render = function(deltaTime)
 	gfx.BeginPath()
 	gfx.GlobalCompositeOperation(gfx.BLEND_OP_SOURCE_OVER)
 	
+	if not played then
+		played = true
+		game.PlaySample("title_bgm",true)
+	end
+	
 	cursorGet = 1
     buttonY = resy / 2;
     hovered = nil;
 	
-    gfx.LoadSkinFont("NotoSans-Regular.ttf");
+    gfx.LoadSkinFont("slant.ttf");
 	
 	for i=1,#buttons do
 		cursorYs[i] = buttonY
@@ -185,9 +192,9 @@ render = function(deltaTime)
 	
     gfx.BeginPath();
     gfx.FillColor(255,255,255);
-    gfx.FontSize(120);
+    gfx.FontSize(300);
     if label == -1 then
-        label = gfx.CreateLabel("unnamed_sdvx_clone", 120, 0);
+        label = gfx.CreateLabel("USC", 300, 0);
     end
     gfx.TextAlign(gfx.TEXT_ALIGN_CENTER + gfx.TEXT_ALIGN_MIDDLE);
     gfx.DrawLabel(label, resx / 2, resy / 2 - 200, resx-40);
@@ -204,6 +211,7 @@ end;
 
 mouse_pressed = function(button)
     if hovered then
+		game.StopSample("title_bgm")
         hovered()
     end
     return 0
